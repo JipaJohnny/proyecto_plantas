@@ -1,0 +1,56 @@
+import data.datos as dt
+
+def validar_planta(planta):
+  plantas=list(dt.consumo_energia.keys())
+  while planta not in plantas:
+    planta=input("Error! --> Ingrese el nombre correcto de una planta: ").title()
+  return planta
+
+def validar_ciudadEnPlanta(planta,ciudad):
+  while ciudad not in dt.consumo_energia[planta]:
+    ciudad=input("Error --> Ingrese el nombre de una ciudad para esa planta: ").title()
+  return ciudad
+
+def total_anual_planta_ciudad(planta,ciudad):
+  consumos=dt.consumo_energia[planta][ciudad]["consumos"]
+  tarifa=dt.consumo_energia[planta][ciudad]["tarifa"]
+  return sum(consumos)*tarifa
+
+def validar_ciudad(ciudad):
+  ciudades=list(dt.información["costa"])+list(dt.información["sierra"])+list(dt.información["oriente"])
+  while ciudad not in ciudades:
+    ciudad=input("Error! --> Ingrese el nombre de una ciudad: ").title()
+  return ciudad
+
+def crear_diccionario_plantas_ciudad(ciudad):
+  diccionario={}
+  for planta in dt.consumo_energia:
+    if ciudad in dt.consumo_energia[planta]:
+      diccionario[planta]=total_anual_planta_ciudad(planta,ciudad)
+  return diccionario
+
+def validar_region(region):
+  while region not in ["costa","sierra","oriente"]:
+    region=input("Error! --> Ingrese el nombre de la region: ").lower()
+  return region
+
+def total_region(region):
+  ciudad_Region=dt.información[region]
+  total=0
+  for ciudad in ciudad_Region:
+    total+=sum(list(crear_diccionario_plantas_ciudad(ciudad).values()))
+  return total
+
+def validar_mes(mes):
+  0,1,2,3,4,5,6,7,8,9,10,11
+  while not(mes.isdigit()) or int(mes)<0 or int(mes)>11:
+    mes=input("ERROR! --> Ingrese un mes: ")
+  return int(mes)
+
+def consumo_mes_planta(planta,mes):
+  total=0
+  for ciudad in dt.consumo_energia[planta]:
+    consumo=dt.consumo_energia[planta][ciudad]["consumos"][mes]
+    tarifa=dt.consumo_energia[planta][ciudad]["tarifa"]
+    total+=consumo*tarifa
+  return total
